@@ -7,27 +7,29 @@ const AddImagePage = () => {
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
+    const [file, setFile] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { addImage, images } = useImages();
     const navigate = useNavigate();
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 2 * 1024 * 1024) {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            if (selectedFile.size > 2 * 1024 * 1024) {
                 setError('Image size should be less than 2MB');
                 return;
             }
-
+            setFile(selectedFile);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(selectedFile);
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
@@ -36,18 +38,20 @@ const AddImagePage = () => {
             return;
         }
 
-        if (!imagePreview) {
+        if (!file) {
             setError('Please select an image.');
             return;
         }
 
-        addImage({
-            name,
-            number,
-            url: imagePreview
-        });
+        setLoading(true);
+        const result = await addImage(name, number, file);
+        setLoading(false);
 
-        navigate('/');
+        if (result.success) {
+            navigate('/');
+        } else {
+            setError(result.message || 'Error uploading image. Please try again.');
+        }
     };
 
     return (
@@ -112,7 +116,9 @@ const AddImagePage = () => {
 
                     {error && <p style={{ color: '#f85149', marginBottom: '1rem' }}>{error}</p>}
 
-                    <button type="submit" className="btn-primary">Save Image & Generate QR</button>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                        {loading ? 'Uploading...' : 'Save Image & Generate QR'}
+                    </button>
                 </form>
             </div>
         </div>

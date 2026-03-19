@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { QrCode, X, Search, Info, Edit, Trash2 } from 'lucide-react';
 
 const GalleryPage = () => {
-    const { images, deleteImage, updateImage } = useImages();
+    const { images, loading, deleteImage, updateImage } = useImages();
     const [selectedQR, setSelectedQR] = useState(null);
     const [editingImage, setEditingImage] = useState(null);
     const [editName, setEditName] = useState('');
@@ -15,9 +15,9 @@ const GalleryPage = () => {
         return `${window.location.origin}/view/${number}`;
     };
 
-    const handleDelete = (id, name) => {
+    const handleDelete = (id, name, storagePath) => {
         if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
-            deleteImage(id);
+            deleteImage(id, storagePath);
         }
     };
 
@@ -57,7 +57,12 @@ const GalleryPage = () => {
                 )}
             </div>
 
-            {images.length === 0 ? (
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                    <div className="loader"></div>
+                    <p style={{ color: '#8b949e', marginTop: '1rem' }}>Loading church records...</p>
+                </div>
+            ) : images.length === 0 ? (
                 <div className="card" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
                     <Search size={64} color="#30363d" style={{ marginBottom: '1rem' }} />
                     <h3>No images found</h3>
@@ -82,7 +87,7 @@ const GalleryPage = () => {
                                         <Edit size={16} />
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(img.id, img.name)}
+                                        onClick={() => handleDelete(img.id, img.name, img.storage_path)}
                                         style={{ background: 'rgba(248, 81, 73, 0.1)', border: '1px solid rgba(248, 81, 73, 0.4)', color: '#f85149', padding: '5px', borderRadius: '4px', cursor: 'pointer' }}
                                         title="Delete"
                                     >
