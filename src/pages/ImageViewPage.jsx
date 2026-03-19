@@ -33,7 +33,7 @@ const ImageViewPage = () => {
                 <ArrowLeft size={20} /> Back to Gallery
             </Link>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', alignItems: 'start' }}>
+            <div className="details-grid">
                 <div className="card" style={{ padding: '0', overflow: 'hidden', border: 'none', boxShadow: '0 0 50px rgba(0,0,0,0.4)' }}>
                     <img
                         src={image.url}

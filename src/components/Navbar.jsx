@@ -19,7 +19,7 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="navbar-brand">
                 <img src={logo} alt="Logo" style={{ height: '40px', width: '40px', borderRadius: '50%' }} />
-                <span>أسرة القديس يوليوس الأقفهصي و أبونا بيشوي كامل </span>
+                <span>Mary Church</span>
             </div>
             <div className="navbar-links">
                 <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
