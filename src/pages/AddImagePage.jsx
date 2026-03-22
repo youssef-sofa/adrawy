@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useImages } from '../context/ImageContext';
-import { Upload, ListOrdered, FileImage, Tag, Hash } from 'lucide-react';
+import { Upload, FileImage, Tag } from 'lucide-react';
 
 const AddImagePage = () => {
     const [name, setName] = useState('');
-    const [number, setNumber] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -33,18 +32,13 @@ const AddImagePage = () => {
         e.preventDefault();
         setError('');
 
-        if (images.some(img => img.number === number)) {
-            setError('This image number already exists. Please use a unique number.');
-            return;
-        }
-
         if (!file) {
             setError('Please select an image.');
             return;
         }
 
         setLoading(true);
-        const result = await addImage(name, number, file);
+        const result = await addImage(name, file);
         setLoading(false);
 
         if (result.success) {
@@ -100,19 +94,6 @@ const AddImagePage = () => {
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label>Image Number (Unique ID for QR)</label>
-                        <div className="input-with-icon">
-                            <Hash size={18} />
-                            <input
-                                type="text"
-                                placeholder="e.g. 101"
-                                value={number}
-                                onChange={(e) => setNumber(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
 
                     {error && <p style={{ color: '#f85149', marginBottom: '1rem' }}>{error}</p>}
 

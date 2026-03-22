@@ -28,8 +28,22 @@ export const ImageProvider = ({ children }) => {
         fetchImages();
     }, []);
 
-    const addImage = async (name, number, file) => {
+    const generateUniqueNumber = async () => {
+        const { data } = await supabase
+            .from('images')
+            .select('number');
+
+        if (!data || data.length === 0) return '1';
+
+        const maxNumber = Math.max(...data.map(img => parseInt(img.number, 10) || 0));
+        return String(maxNumber + 1);
+    };
+
+    const addImage = async (name, file) => {
         try {
+            // 0. Generate unique number
+            const number = await generateUniqueNumber();
+
             // 1. Upload file to Storage
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random()}.${fileExt}`;
